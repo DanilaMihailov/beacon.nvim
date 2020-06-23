@@ -1,10 +1,13 @@
+" highlight used for floating window
 highlight Beacon guibg=white ctermbg=15
 
+" buffer needed for floating window
 let s:fake_buf = nvim_create_buf(v:false, v:true)
-let s:float = 0
+let s:float = 0 " floating win id
 
 let s:fade_timer = 0
 
+" stop timers and remove floatng window
 function! s:Clear_highlight(...)
     if s:fade_timer > 0
         call timer_stop(s:fade_timer)
@@ -16,6 +19,7 @@ function! s:Clear_highlight(...)
     endif
 endfunction
 
+" smoothly fade out window and then close it
 function! s:Fade_window(...)
     if s:float > 0
         let l:old = nvim_win_get_option(s:float, "winblend")
@@ -27,12 +31,15 @@ function! s:Fade_window(...)
     endif
 endfunction
 
+" get current cursor position and show floating window there
 function! s:Highlight_position(...)
+    " already showing, close old window
     if s:float > 0
         call s:Clear_highlight()
     endif
 
     let l:win = nvim_win_get_config(0)
+    " moves happening in floating window, ignore them
     if has_key(l:win, "relative") && l:win.relative != ""
         return
     endif
@@ -48,6 +55,7 @@ function! s:Highlight_position(...)
 endfunction
 
 let s:prev_cursor = 0
+" highlight position if cursor moved significally
 function! s:Cursor_moved()
     let l:cur = line(".")
     let l:diff = l:cur - s:prev_cursor
