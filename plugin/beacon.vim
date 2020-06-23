@@ -1,7 +1,6 @@
 highlight Beacon guibg=white ctermbg=15
 
 let s:fake_buf = nvim_create_buf(v:false, v:true)
-call nvim_buf_set_lines(s:fake_buf, 0, -1, v:true, [""])
 let s:float = 0
 
 let s:fade_timer = 0
