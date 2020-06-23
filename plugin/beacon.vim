@@ -67,6 +67,11 @@ endfunction
 
 " get current cursor position and show floating window there
 function! s:Highlight_position(...) abort
+    " get some bugs when enabled in fugitive
+    if nvim_buf_get_option(0, "ft") == "fugitive"
+        return
+    endif
+
     " already showing, close old window
     if s:float > 0
         call s:Clear_highlight()
