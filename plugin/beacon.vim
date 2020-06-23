@@ -36,6 +36,10 @@ function! s:Fade_window(...)
 endfunction
 
 function! s:Highlight_position(...)
+    let l:win = nvim_win_get_config(0)
+    if has_key(l:win, "relative") && l:win.relative != ""
+        return
+    endif
     if s:float > 0
         return
     endif
