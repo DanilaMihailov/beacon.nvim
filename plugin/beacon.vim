@@ -5,28 +5,25 @@ call nvim_buf_set_lines(s:fake_buf, 0, -1, v:true, [""])
 let s:float = 0
 
 let s:fade_timer = 0
-let s:close_timer = 0
 
 function! s:Clear_highlight(...)
-    if s:close_timer > 0
-        call timer_stop(s:close_timer)
-    endif
     if s:fade_timer > 0
         call timer_stop(s:fade_timer)
     endif
+
     if s:float > 0
         call nvim_win_close(s:float, 0)
         let s:float = 0
     endif
 endfunction
 
-function! s:Delayed_highlight_position()
-    call timer_start(50, funcref("s:Highlight_position"))
-endfunction
-
 function! s:Fade_window(...)
     if s:float > 0
         let l:old = nvim_win_get_option(s:float, "winblend")
+        if l:old == 100
+            call s:Clear_highlight()
+            return
+        endif
         call nvim_win_set_option(s:float, 'winblend', l:old + 1)
     endif
 endfunction
@@ -48,8 +45,7 @@ function! s:Highlight_position(...)
     call nvim_win_set_option(s:float, 'winhl', 'Normal:Beacon')
     call nvim_win_set_option(s:float, 'winblend', 70)
 
-    let s:fade_timer = timer_start(16, funcref("s:Fade_window"), {'repeat': 40})
-    let s:close_timer = timer_start(500, funcref("s:Clear_highlight"))
+    let s:fade_timer = timer_start(16, funcref("s:Fade_window"), {'repeat': 30})
 endfunction
 
 let s:prev_cursor = 0
