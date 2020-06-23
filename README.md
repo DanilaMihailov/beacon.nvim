@@ -6,7 +6,7 @@ Whenever cursor jumps some distance or moves between windows, it will flash so y
 ### [vim-plug](https://github.com/junegunn/vim-plug)
 1. Add the following configuration to your `.vimrc`.
 
-        Plug 'danilamihailov/vim-tips-wiki'
+        Plug 'danilamihailov/beacon.nvim'
 
 2. Install with `:PlugInstall`.
 
