@@ -3,6 +3,8 @@ Whenever cursor jumps some distance or moves between windows, it will flash so y
 
 **Note**: this plugin only works in [NeoVim](https://github.com/neovim/neovim).
 
+![Example gif](https://github.com/DanilaMihailov/beacon.nvim/blob/master/beacon.gif?raw=true)]
+
 ## Installation
 
 ### [vim-plug](https://github.com/junegunn/vim-plug)
