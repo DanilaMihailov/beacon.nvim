@@ -22,7 +22,7 @@ let s:float = 0 " floating win id
 let s:fade_timer = 0
 
 " stop timers and remove floatng window
-function! s:Clear_highlight(...)
+function! s:Clear_highlight(...) abort
     if s:fade_timer > 0
         call timer_stop(s:fade_timer)
     endif
@@ -34,7 +34,7 @@ function! s:Clear_highlight(...)
 endfunction
 
 " smoothly fade out window and then close it
-function! s:Fade_window(...)
+function! s:Fade_window(...) abort
     if s:float > 0
         let l:old = nvim_win_get_option(s:float, "winblend")
         if g:beacon_shrink
@@ -56,18 +56,17 @@ function! s:Fade_window(...)
         call nvim_win_set_option(s:float, 'winblend', l:old + l:speed)
         if g:beacon_shrink
             " some bug with set_width E315 and E5555, when scrolloff set to 8
-            call nvim_win_set_width(s:float, l:old_cols - l:speed)
+            try
+                call nvim_win_set_width(s:float, l:old_cols - l:speed)
+            catch /.*/
+                
+            endtry
         endif
     endif
 endfunction
 
 " get current cursor position and show floating window there
-function! s:Highlight_position(...)
-    " get some bugs when enabled in fugitive
-    if nvim_buf_get_option(0, "ft") == "fugitive"
-        return
-    endif
-
+function! s:Highlight_position(...) abort
     " already showing, close old window
     if s:float > 0
         call s:Clear_highlight()
