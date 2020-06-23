@@ -12,6 +12,8 @@ let g:beacon_minimal_jump = get(g:, 'beacon_minimal_jump', 10)
 let g:beacon_show_jumps = get(g:, 'beacon_show_jumps', 1)
 let g:beacon_shrink = get(g:, 'beacon_shrink', 1)
 let g:beacon_timeout = get(g:, 'beacon_timeout', 0)
+" for future
+let g:beacon_ignore_buffers = get(g:, 'beacon_timeout', [])
 
 " buffer needed for floating window
 let s:fake_buf = nvim_create_buf(v:false, v:true)
@@ -61,6 +63,11 @@ endfunction
 
 " get current cursor position and show floating window there
 function! s:Highlight_position(...)
+    " get some bugs when enabled in fugitive
+    if nvim_buf_get_option(0, "ft") == "fugitive"
+        return
+    endif
+
     " already showing, close old window
     if s:float > 0
         call s:Clear_highlight()
