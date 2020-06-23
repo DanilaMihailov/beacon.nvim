@@ -9,6 +9,7 @@ endif
 let g:beacon_size = get(g:, 'beacon_size', 40)
 let g:beacon_minimal_jump = get(g:, 'beacon_minimal_jump', 10)
 let g:beacon_show_jumps = get(g:, 'beacon_show_jumps', 1)
+let g:beacon_shrink = get(g:, 'beacon_shrink', 1)
 
 " buffer needed for floating window
 let s:fake_buf = nvim_create_buf(v:false, v:true)
@@ -32,15 +33,27 @@ endfunction
 function! s:Fade_window(...)
     if s:float > 0
         let l:old = nvim_win_get_option(s:float, "winblend")
-        " some bug with set_width E315 and E5555
-        " let l:old_cols = nvim_win_get_width(s:float)
-        " if l:old == 100 || l:old_cols == 1
-        if l:old == 100
+        if g:beacon_shrink
+            let l:old_cols = nvim_win_get_width(s:float)
+        else
+            let l:old_cols = 40
+        endif
+
+        if l:old > 80
+            let l:speed = 2
+        else
+            let l:speed = 1
+        endif
+
+        if l:old == 100 || l:old_cols == 10
             call s:Clear_highlight()
             return
         endif
-        call nvim_win_set_option(s:float, 'winblend', l:old + 1)
-        " call nvim_win_set_width(s:float, l:old_cols - 1)
+        call nvim_win_set_option(s:float, 'winblend', l:old + l:speed)
+        if g:beacon_shrink
+            " some bug with set_width E315 and E5555, when scrolloff set to 8
+            call nvim_win_set_width(s:float, l:old_cols - l:speed)
+        endif
     endif
 endfunction
 
@@ -64,7 +77,7 @@ function! s:Highlight_position(...)
     call nvim_win_set_option(s:float, 'winhl', 'Normal:Beacon')
     call nvim_win_set_option(s:float, 'winblend', 70)
 
-    let s:fade_timer = timer_start(16, funcref("s:Fade_window"), {'repeat': 30})
+    let s:fade_timer = timer_start(16, funcref("s:Fade_window"), {'repeat': 35})
 endfunction
 
 let s:prev_cursor = 0
