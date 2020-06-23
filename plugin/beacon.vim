@@ -36,14 +36,14 @@ function! s:Fade_window(...)
 endfunction
 
 function! s:Highlight_position(...)
+    if s:float > 0
+        call s:Clear_highlight()
+    endif
     let l:win = nvim_win_get_config(0)
     if has_key(l:win, "relative") && l:win.relative != ""
         return
     endif
-    if s:float > 0
-        return
-    endif
-    let l:opts = {'relative': 'win', 'width': 40,  'bufpos': [line(".")-1, col(".")], 'height': 1, 'col': 1,
+    let l:opts = {'relative': 'win', 'width': 40,  'bufpos': [line(".")-1, col(".")], 'height': 1, 'col': 0,
         \ 'row': 0, 'anchor': 'NW', 'style': 'minimal', 'focusable': v:false}
     let s:float = nvim_open_win(s:fake_buf, 0, l:opts)
     call nvim_win_set_option(s:float, 'winhl', 'Normal:Beacon')
@@ -59,9 +59,6 @@ function! s:Cursor_moved()
     let l:diff = l:cur - s:prev_cursor
 
     if l:diff > 10 || l:diff < - 10
-        if s:float > 0
-            call s:Clear_highlight()
-        endif
         call s:Highlight_position()
     endif
 
