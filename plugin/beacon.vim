@@ -14,10 +14,11 @@ function! s:Clear_highlight(...)
 endfunction
 
 function! s:Highlight_position()
+    call getmatches() " somehow fixes double line highlight
     if col("$") < 10
         highlight! CursorLine guibg=gray
     endif
-    call matchaddpos("Beacon", [[line("."), col("."), 20], 34])
+    call matchaddpos("Beacon", [[line("."), col("."), 15], 34])
     call timer_start(500, funcref("s:Clear_highlight"))
 endfunction
 
