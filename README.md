@@ -40,5 +40,18 @@ You can change what beacon considers significant jump, by changing
 let g:beacon_minimal_jump = 10
 ```
 
+### Animation
+You can disable shrinking animation by setting
+```viml
+let g:beacon_shrink = 0
+```
+enabled by default
+
+You can disable fading animation by setting
+```viml
+let g:beacon_fade = 0
+```
+enabled by default. You should set `g:beacon_timeout` to some number of milliseconds (somewhere around 300-500 is nice), otherwise beacon wont be cleared.
+
 # How it works
 Whenever plugin detects some kind of a jump, it's showing floating window at the cursor position and using `winblend` fades window out.

@@ -7,9 +7,11 @@ if !hlexists("Beacon")
 endif
 
 let g:beacon_size = get(g:, 'beacon_size', 40)
+let g:beacon_fade = get(g:, 'beacon_fade', 1)
 let g:beacon_minimal_jump = get(g:, 'beacon_minimal_jump', 10)
 let g:beacon_show_jumps = get(g:, 'beacon_show_jumps', 1)
 let g:beacon_shrink = get(g:, 'beacon_shrink', 1)
+let g:beacon_timeout = get(g:, 'beacon_timeout', 0)
 
 " buffer needed for floating window
 let s:fake_buf = nvim_create_buf(v:false, v:true)
@@ -77,7 +79,14 @@ function! s:Highlight_position(...)
     call nvim_win_set_option(s:float, 'winhl', 'Normal:Beacon')
     call nvim_win_set_option(s:float, 'winblend', 70)
 
-    let s:fade_timer = timer_start(16, funcref("s:Fade_window"), {'repeat': 35})
+    if g:beacon_fade
+        let s:fade_timer = timer_start(16, funcref("s:Fade_window"), {'repeat': 35})
+    endif
+
+    if g:beacon_timeout
+        call timer_start(g:beacon_timeout, funcref("s:Clear_highlight"), {'repeat': 1})
+    endif
+
 endfunction
 
 let s:prev_cursor = 0
