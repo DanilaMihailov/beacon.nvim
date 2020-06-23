@@ -22,3 +22,23 @@ Beacon is highlighted by `Beacon` group, so you can change it like this:
 highlight Beacon guibg=white ctermbg=15
 ```
 use `guibg` if you have `termguicolors` enabled, otherwise use `ctermbg`.
+
+### Changing beacon size
+```viml
+let g:beacon_size = 40
+```
+
+### When to show beacon
+If you **only** want to see beacon when cursor changes windows, you can set
+```viml
+let g:beacon_show_jumps = 0
+```
+and it will ignore jumps inside buffer. By default shows all jumps.
+
+You can change what beacon considers significant jump, by changing
+```viml
+let g:beacon_minimal_jump = 10
+```
+
+# How it works
+Whenever plugin detects some kind of a jump, it's showing floating window at the cursor position and using `winblend` fades window out.

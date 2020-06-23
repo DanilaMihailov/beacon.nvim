@@ -1,5 +1,14 @@
 " highlight used for floating window
-highlight Beacon guibg=white ctermbg=15
+highlight BeaconDefault guibg=white ctermbg=15
+
+" if user overriden highlight, then we do not touch it
+if !hlexists("Beacon")
+    hi! link Beacon BeaconDefault
+endif
+
+let g:beacon_size = get(g:, 'beacon_size', 40)
+let g:beacon_minimal_jump = get(g:, 'beacon_minimal_jump', 10)
+let g:beacon_show_jumps = get(g:, 'beacon_show_jumps', 1)
 
 " buffer needed for floating window
 let s:fake_buf = nvim_create_buf(v:false, v:true)
@@ -44,7 +53,7 @@ function! s:Highlight_position(...)
         return
     endif
 
-    let l:opts = {'relative': 'win', 'width': 40,  'bufpos': [line(".")-1, col(".")], 'height': 1, 'col': 0,
+    let l:opts = {'relative': 'win', 'width': g:beacon_size,  'bufpos': [line(".")-1, col(".")], 'height': 1, 'col': 0,
         \ 'row': 0, 'anchor': 'NW', 'style': 'minimal', 'focusable': v:false}
     let s:float = nvim_open_win(s:fake_buf, 0, l:opts)
 
@@ -60,7 +69,7 @@ function! s:Cursor_moved()
     let l:cur = line(".")
     let l:diff = l:cur - s:prev_cursor
 
-    if l:diff > 10 || l:diff < - 10
+    if l:diff > g:beacon_minimal_jump || l:diff < g:beacon_minimal_jump * -1
         call s:Highlight_position()
     endif
 
@@ -69,7 +78,9 @@ endfunction
 
 augroup BeaconHighlightMoves
     autocmd!
-    autocmd CursorMoved * call s:Cursor_moved()
+    if g:beacon_show_jumps
+        autocmd CursorMoved * call s:Cursor_moved()
+    endif
     autocmd BufWinEnter * call s:Highlight_position()
     autocmd WinEnter * call s:Highlight_position()
 augroup end
