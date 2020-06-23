@@ -53,5 +53,8 @@ let g:beacon_fade = 0
 ```
 enabled by default. You should set `g:beacon_timeout` to some number of milliseconds (somewhere around 300-500 is nice), otherwise beacon wont be cleared.
 
+# Issues
+Somehow if `scrolloff` is set, plugin breaks. I am working on it.
+
 # How it works
 Whenever plugin detects some kind of a jump, it's showing floating window at the cursor position and using `winblend` fades window out.
