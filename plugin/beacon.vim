@@ -32,11 +32,15 @@ endfunction
 function! s:Fade_window(...)
     if s:float > 0
         let l:old = nvim_win_get_option(s:float, "winblend")
+        " some bug with set_width E315 and E5555
+        " let l:old_cols = nvim_win_get_width(s:float)
+        " if l:old == 100 || l:old_cols == 1
         if l:old == 100
             call s:Clear_highlight()
             return
         endif
         call nvim_win_set_option(s:float, 'winblend', l:old + 1)
+        " call nvim_win_set_width(s:float, l:old_cols - 1)
     endif
 endfunction
 
