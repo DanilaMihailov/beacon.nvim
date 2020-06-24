@@ -6,6 +6,7 @@ if !hlexists("Beacon")
     hi! link Beacon BeaconDefault
 endif
 
+let g:beacon_enable = get(g:, 'beacon_enable', 1) 
 let g:beacon_size = get(g:, 'beacon_size', 40)
 let g:beacon_fade = get(g:, 'beacon_fade', 1)
 let g:beacon_minimal_jump = get(g:, 'beacon_minimal_jump', 10)
@@ -78,7 +79,11 @@ function! s:Fade_window(...) abort
 endfunction
 
 " get current cursor position and show floating window there
-function! s:Highlight_position(...) abort
+function! s:Highlight_position(force) abort
+    if g:beacon_enable == 0 && a:force == v:false
+        return
+    endif
+
     if s:IsIgnoreBuffer()
         return
     endif
@@ -123,11 +128,24 @@ function! s:Cursor_moved()
     let l:diff = l:cur - s:prev_cursor
 
     if l:diff > g:beacon_minimal_jump || l:diff < g:beacon_minimal_jump * -1
-        call s:Highlight_position()
+        call s:Highlight_position(v:false)
     endif
 
     let s:prev_cursor = l:cur
 endfunction
+
+function! g:Beacon_toggle() abort
+    if g:beacon_enable
+        let g:beacon_enable = 0
+    else
+        let g:beacon_enable = 1
+    endif
+endfunction
+
+command! Beacon call s:Highlight_position(v:true)
+command! BeaconToggle call g:Beacon_toggle()
+command! BeaconOn let g:beacon_enable = 1
+command! BeaconOff let g:beacon_enable = 0
 
 augroup BeaconHighlightMoves
     autocmd!
@@ -136,5 +154,5 @@ augroup BeaconHighlightMoves
     endif
     " autocmd BufWinEnter * call s:Highlight_position()
     " autocmd FocusGained * call s:Highlight_position()
-    autocmd WinEnter * call s:Highlight_position()
+    autocmd WinEnter * call s:Highlight_position(v:false)
 augroup end
