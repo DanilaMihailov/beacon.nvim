@@ -134,7 +134,7 @@ function! s:Cursor_moved()
     let s:prev_cursor = l:cur
 endfunction
 
-function! g:Beacon_toggle() abort
+function! s:Beacon_toggle() abort
     if g:beacon_enable
         let g:beacon_enable = 0
     else
@@ -143,7 +143,7 @@ function! g:Beacon_toggle() abort
 endfunction
 
 command! Beacon call s:Highlight_position(v:true)
-command! BeaconToggle call g:Beacon_toggle()
+command! BeaconToggle call s:Beacon_toggle()
 command! BeaconOn let g:beacon_enable = 1
 command! BeaconOff let g:beacon_enable = 0
 
