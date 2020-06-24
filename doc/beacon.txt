@@ -31,6 +31,10 @@ OPTIONS                                         *beacon-option*
         Delay before hiding beacon in milliseconds. Default is not set, it is
         just fades out until it's gone.
 
+    g:beacon_ignore_buffers                     *g:beacon_ignore_buffers*
+        List of regexes that will be tested against buffer name, and if
+        matches beacon will not show up. Defautl [].
+
 CHANGE COLOR                                    *hl-Beacon*
 
 Beacon is highlighted by `Beacon` group, so you can change it like this:

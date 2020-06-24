@@ -57,5 +57,11 @@ let g:beacon_fade = 0
 ```
 enabled by default. You should set `g:beacon_timeout` to some number of milliseconds (somewhere around 300-500 is nice), otherwise beacon wont be cleared.
 
+### Ignoring buffers
+To ignore a buffer you can set list of regexes
+```viml
+g:beacon_ignore_buffers = [\w*git*\w]
+```
+
 # How it works
 Whenever plugin detects some kind of a jump, it's showing floating window at the cursor position and using `winblend` fades window out.
