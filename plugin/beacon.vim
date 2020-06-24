@@ -12,14 +12,24 @@ let g:beacon_minimal_jump = get(g:, 'beacon_minimal_jump', 10)
 let g:beacon_show_jumps = get(g:, 'beacon_show_jumps', 1)
 let g:beacon_shrink = get(g:, 'beacon_shrink', 1)
 let g:beacon_timeout = get(g:, 'beacon_timeout', 0)
-" for future
-let g:beacon_ignore_buffers = get(g:, 'beacon_timeout', [])
+let g:beacon_ignore_buffers = get(g:, 'beacon_ignore_buffers', [])
 
 " buffer needed for floating window
 let s:fake_buf = nvim_create_buf(v:false, v:true)
 let s:float = 0 " floating win id
 
 let s:fade_timer = 0
+
+fun! s:IsIgnoreBuffer()
+    let name = bufname()
+
+    for i in g:beacon_ignore_buffers
+        if name =~ i
+            return 1
+        endif
+    endfor
+    return 0
+endf
 
 " stop timers and remove floatng window
 function! s:Clear_highlight(...) abort
@@ -69,6 +79,10 @@ endfunction
 
 " get current cursor position and show floating window there
 function! s:Highlight_position(...) abort
+    if s:IsIgnoreBuffer()
+        return
+    endif
+
     " get some bugs when enabled in fugitive
     if nvim_buf_get_option(0, "ft") == "fugitive"
         return
@@ -120,6 +134,7 @@ augroup BeaconHighlightMoves
     if g:beacon_show_jumps
         autocmd CursorMoved * call s:Cursor_moved()
     endif
-    autocmd BufWinEnter * call s:Highlight_position()
+    " autocmd BufWinEnter * call s:Highlight_position()
+    " autocmd FocusGained * call s:Highlight_position()
     autocmd WinEnter * call s:Highlight_position()
 augroup end
