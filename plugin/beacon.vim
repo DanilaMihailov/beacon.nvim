@@ -43,7 +43,9 @@ function! s:Fade_window(...) abort
             let l:old_cols = 40
         endif
 
-        if l:old > 80
+        if l:old > 90
+            let l:speed = 3
+        elseif l:old > 80
             let l:speed = 2
         else
             let l:speed = 1
