@@ -1,0 +1,45 @@
+*beacon.txt*  See your cursor jump
+
+INTRODUCTION                                    *beacon*
+
+Whenever cursor jumps some distance or moves between windows, it will flash so
+you can see where it is. This plugin is heavily inspired by emacs package
+beacon.
+
+Note: this plugin only works in neovim.
+
+OPTIONS                                         *beacon-option*
+    
+    g:beacon_size                               *g:beacon_size*
+        Change beacon size. Default 40.
+
+    g:beacon_show_jumps                         *g:beacon_show_jumps*
+        Show beacon, when cursor jumps inside window. Default 1.
+
+    g:beacon_minimal_jump                       *g:beacon_minimal_jump*
+        Number of lines that considered a jump. Default 10.
+
+    g:beacon_shrink                             *g:beacon_shrink*
+        Shrinking animation of beacon. Default 1.
+
+    g:beacon_fade                               *g:beacon_fade*
+        Fading animation of beacon. Default 1. 
+        Note: You should set |g:beacon_timeout| to some number of milliseconds
+        (somewhere around 300-500 is nice), otherwise beacon wont be cleared.
+
+    g:beacon_timeout                            *g:beacon_timeout*
+        Delay before hiding beacon in milliseconds. Default is not set, it is
+        just fades out until it's gone.
+
+CHANGE COLOR                                    *hl-Beacon*
+
+Beacon is highlighted by `Beacon` group, so you can change it like this:
+>
+    highlight Beacon guibg=white ctermbg=15
+<
+use |guibg| if you have |termguicolors| enabled, otherwise use |ctermbg|.
+
+==============================================================================
+ vim:tw=78:ft=help:norl:
+
+
