@@ -25,7 +25,7 @@ Just set
 ```viml
 let g:beacon_enable = 0
 ```
-and beacon will be disabled, but you still can use `:Beacon` command to highlight cursor. See [commands](/#Commands).
+and beacon will be disabled, but you still can use `:Beacon` command to highlight cursor. See [commands](#Commands).
 
 ### Changing color
 Beacon is highlighted by `Beacon` group, so you can change it like this:
