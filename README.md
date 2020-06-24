@@ -20,6 +20,13 @@ Or use your favorite plugin manager
 
 ## Customization
 
+### Disable beacon
+Just set 
+```viml
+let g:beacon_enable = 0
+```
+and beacon will be disabled, but you still can use `:Beacon` command to highlight cursor. See [commands](/#Commands).
+
 ### Changing color
 Beacon is highlighted by `Beacon` group, so you can change it like this:
 ```viml
@@ -62,6 +69,14 @@ To ignore a buffer you can set list of regexes
 ```viml
 g:beacon_ignore_buffers = [\w*git*\w]
 ```
+
+## Commands
+There is 4 commands available.
+- `:Beacon` highlight current position (even if plugin is disabled)
+- `:BeaconToggle` toggle `g:beacon_enable` variable
+- `:BeaconOn` enable Beacon
+- `:BeaconOff` disable Beacon
+
 
 # How it works
 Whenever plugin detects some kind of a jump, it's showing floating window at the cursor position and using `winblend` fades window out.

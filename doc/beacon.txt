@@ -9,6 +9,11 @@ beacon.
 Note: this plugin only works in neovim.
 
 OPTIONS                                         *beacon-option*
+
+    g:beacon_enable                             *g:beacon_enable*
+        Enables plugin. Default 1.
+        Note: when set to 0, you still can use |:Beacon| command to highlight
+        cursor. See |beacon-commands|.
     
     g:beacon_size                               *g:beacon_size*
         Change beacon size. Default 40.
@@ -33,7 +38,7 @@ OPTIONS                                         *beacon-option*
 
     g:beacon_ignore_buffers                     *g:beacon_ignore_buffers*
         List of regexes that will be tested against buffer name, and if
-        matches beacon will not show up. Defautl [].
+        matches beacon will not show up. Default [].
 
 CHANGE COLOR                                    *hl-Beacon*
 
@@ -42,6 +47,20 @@ Beacon is highlighted by `Beacon` group, so you can change it like this:
     highlight Beacon guibg=white ctermbg=15
 <
 use |guibg| if you have |termguicolors| enabled, otherwise use |ctermbg|.
+
+COMMANDS                                        *beacon-commands*
+
+                                                *:Beacon*
+:Beacon         highlight current position (even if plugin is disabled)
+
+                                                *:BeaconToggle*
+:BeaconToggle   toggle |g:beacon_enable| variable
+
+                                                *:BeaconOn*
+:BeaconOn       enable Beacon
+
+                                                *:BeaconOff*
+:BeaconOff      disable Beacon
 
 ==============================================================================
  vim:tw=78:ft=help:norl:
