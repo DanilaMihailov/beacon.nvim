@@ -1,3 +1,10 @@
+" do not load plugin twice (get weird errors)
+if get(g:, "beacon_loaded", 0)
+    finish
+endif
+
+let g:beacon_loaded = 1
+
 " highlight used for floating window
 highlight BeaconDefault guibg=white ctermbg=15
 
