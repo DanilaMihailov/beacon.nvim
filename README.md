@@ -1,7 +1,7 @@
 # Beacon.nvim - see your cursor jump
 Whenever cursor jumps some distance or moves between windows, it will flash so you can see where it is. This plugin is heavily inspired by emacs package [beacon](https://github.com/Malabarba/beacon).
 
-**Note**: this plugin only works in [neovim](https://github.com/neovim/neovim).
+**Note**: for now this plugin only works in [neovim](https://github.com/neovim/neovim) v0.4+.
 
 <p><a target="_blank" rel="noopener noreferrer" href="/example-beacon.gif"><img src="/example-beacon.gif" alt="example-beacon.gif" style="max-width:100%;"></a></p>
 
@@ -25,7 +25,7 @@ Just set
 ```viml
 let g:beacon_enable = 0
 ```
-and beacon will be disabled, but you still can use `:Beacon` command to highlight cursor. See [commands](/#Commands).
+and beacon will be disabled, but you still can use `:Beacon` command to highlight cursor. See [commands](#Commands).
 
 ### Changing color
 Beacon is highlighted by `Beacon` group, so you can change it like this:
