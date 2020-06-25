@@ -62,7 +62,9 @@ You can disable fading animation by setting
 ```viml
 let g:beacon_fade = 0
 ```
-enabled by default. You should set `g:beacon_timeout` to some number of milliseconds (somewhere around 300-500 is nice), otherwise beacon wont be cleared.
+enabled by default. 
+
+You can set `g:beacon_timeout` to hide beacon early, by default it set to 500ms.
 
 ### Ignoring buffers
 To ignore a buffer you can set list of regexes
