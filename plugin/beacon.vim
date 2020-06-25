@@ -12,7 +12,7 @@ let g:beacon_fade = get(g:, 'beacon_fade', 1)
 let g:beacon_minimal_jump = get(g:, 'beacon_minimal_jump', 10)
 let g:beacon_show_jumps = get(g:, 'beacon_show_jumps', 1)
 let g:beacon_shrink = get(g:, 'beacon_shrink', 1)
-let g:beacon_timeout = get(g:, 'beacon_timeout', 0)
+let g:beacon_timeout = get(g:, 'beacon_timeout', 500)
 let g:beacon_ignore_buffers = get(g:, 'beacon_ignore_buffers', [])
 
 " buffer needed for floating window
@@ -115,9 +115,7 @@ function! s:Highlight_position(force) abort
         let s:fade_timer = timer_start(16, funcref("s:Fade_window"), {'repeat': 35})
     endif
 
-    if g:beacon_timeout
-        call timer_start(g:beacon_timeout, funcref("s:Clear_highlight"), {'repeat': 1})
-    endif
+    call timer_start(g:beacon_timeout, funcref("s:Clear_highlight"), {'repeat': 1})
 
 endfunction
 
