@@ -33,8 +33,7 @@ OPTIONS                                         *beacon-option*
         (somewhere around 300-500 is nice), otherwise beacon wont be cleared.
 
     g:beacon_timeout                            *g:beacon_timeout*
-        Delay before hiding beacon in milliseconds. Default is not set, it is
-        just fades out until it's gone.
+        Delay before hiding beacon in milliseconds. Default is 500.
 
     g:beacon_ignore_buffers                     *g:beacon_ignore_buffers*
         List of regexes that will be tested against buffer name, and if
