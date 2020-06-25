@@ -38,7 +38,7 @@ function! s:Clear_highlight(...) abort
         call timer_stop(s:fade_timer)
     endif
 
-    if s:float > 0
+    if s:float > 0 && nvim_win_is_valid(s:float)
         call nvim_win_close(s:float, 0)
         let s:float = 0
     endif
@@ -46,7 +46,7 @@ endfunction
 
 " smoothly fade out window and then close it
 function! s:Fade_window(...) abort
-    if s:float > 0
+    if s:float > 0 && nvim_win_is_valid(s:float)
         let l:old = nvim_win_get_option(s:float, "winblend")
         if g:beacon_shrink
             let l:old_cols = nvim_win_get_width(s:float)
