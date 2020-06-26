@@ -27,6 +27,7 @@ let s:fake_buf = nvim_create_buf(v:false, v:true)
 let s:float = 0 " floating win id
 
 let s:fade_timer = 0
+let s:close_timer = 0
 
 fun! s:IsIgnoreBuffer()
     let name = bufname()
@@ -43,6 +44,10 @@ endf
 function! s:Clear_highlight(...) abort
     if s:fade_timer > 0
         call timer_stop(s:fade_timer)
+    endif
+
+    if s:close_timer > 0
+        call timer_stop(s:close_timer)
     endif
 
     if s:float > 0 && nvim_win_is_valid(s:float)
@@ -122,7 +127,7 @@ function! s:Highlight_position(force) abort
         let s:fade_timer = timer_start(16, funcref("s:Fade_window"), {'repeat': 35})
     endif
 
-    call timer_start(g:beacon_timeout, funcref("s:Clear_highlight"), {'repeat': 1})
+    let s:close_timer = timer_start(g:beacon_timeout, funcref("s:Clear_highlight"), {'repeat': 1})
 
 endfunction
 
