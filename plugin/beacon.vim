@@ -6,7 +6,12 @@ endif
 let g:beacon_loaded = 1
 
 " highlight used for floating window
-highlight BeaconDefault guibg=white ctermbg=15 guifg=black ctermfg=black
+if has("nvim")
+    highlight BeaconDefault guibg=white ctermbg=15
+else
+    highlight BeaconDefault guibg=silver ctermbg=7
+endif
+
 
 " if user overriden highlight, then we do not touch it
 if !hlexists("Beacon")
@@ -155,16 +160,39 @@ function! s:Highlight_position(force) abort
         call nvim_win_set_option(s:float, 'winhl', 'Normal:Beacon')
         call nvim_win_set_option(s:float, 'winblend', 70)
     else
+
+        " get text under cursor
         let l:text = strcharpart(getbufline("%", line("."))[0], col(".") - 1, g:beacon_size)
+
+        let l:i = 0
+        let l:hls = []
+
+        " get highlights of each character and save them
+        while l:i <= strdisplaywidth(l:text)
+            let l:hi = synIDattr(synID(line("."), l:i, 0), "name")
+            if l:hi == ''
+                let l:i += 1
+                continue
+            endif
+            let l:prop_name = "BeaconProp".l:i
+            call prop_type_delete(l:prop_name)
+            call prop_type_add(l:prop_name, {'highlight': l:hi})
+            call add(l:hls, {'col': l:i + 1, 'type': l:prop_name, 'hi': l:hi})
+            let l:i += 1
+        endwhile
+
+        echomsg string(l:hls)
+
         let l:diff = g:beacon_size - strlen(l:text)
         if  l:diff > 0
             let l:text .= repeat(" ", l:diff)
         endif
 
-        let s:float = popup_create(l:text, #{
+        " let s:float = popup_create([ l:text, l:hls ], #{
+        let s:float = popup_create([{'text': l:text, 'props': l:hls}], #{
             \ pos: 'botleft',
             \ line: 'cursor',
-            \ col: 'cursor+1',
+            \ col: 'cursor',
             \ moved: 'WORD',
             \ wrap: v:false,
             \ highlight: 'Beacon'
