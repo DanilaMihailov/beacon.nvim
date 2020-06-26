@@ -138,9 +138,13 @@ function! s:Highlight_position(force) abort
         call nvim_win_set_option(s:float, 'winhl', 'Normal:Beacon')
         call nvim_win_set_option(s:float, 'winblend', 70)
     else
-        let l:text = getbufline("%", line("."))
-        " FIXME: l:text can be empty array
-        let s:float = popup_create(strpart(l:text[0], col(".")-1), #{
+        let l:text = strcharpart(getbufline("%", line("."))[0], col(".") - 1, g:beacon_size)
+        let l:diff = g:beacon_size - strlen(l:text)
+        if  l:diff > 0
+            let l:text .= repeat(" ", l:diff)
+        endif
+
+        let s:float = popup_create(l:text, #{
             \ pos: 'botleft',
             \ line: 'cursor',
             \ col: 'cursor',
