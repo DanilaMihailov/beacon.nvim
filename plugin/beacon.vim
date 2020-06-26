@@ -100,14 +100,14 @@ function! s:Fade_window(...) abort
             let l:old_cols = popup_getpos(s:float).width
 
             if l:old_cols < 20
-                let l:speed = 4
+                let l:speed = 5
             elseif l:old_cols < 30
-                let l:speed = 2
+                let l:speed = 4
             else
-                let l:speed = 2
+                let l:speed = 3
             endif
 
-            if l:old_cols < 1
+            if l:old_cols == 1
                 call s:Clear_highlight()
                 return
             endif
