@@ -137,8 +137,6 @@ function! s:Highlight_position(force) abort
         if nvim_buf_get_option(0, "ft") == "fugitive"
             return
         endif
-    else
-        echo "vim fugitive"
     endif
 
     " already showing, close old window
@@ -180,8 +178,6 @@ function! s:Highlight_position(force) abort
             call add(l:hls, {'col': l:i + 1, 'type': l:prop_name, 'hi': l:hi})
             let l:i += 1
         endwhile
-
-        echomsg string(l:hls)
 
         let l:diff = g:beacon_size - strlen(l:text)
         if  l:diff > 0
