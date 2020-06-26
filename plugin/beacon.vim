@@ -96,7 +96,24 @@ function! s:Fade_window(...) abort
             endif
         endif
     else
-        echo "vim fade"
+        if g:beacon_shrink
+            let l:old_cols = popup_getpos(s:float).width
+
+            if l:old_cols < 20
+                let l:speed = 4
+            elseif l:old_cols < 30
+                let l:speed = 2
+            else
+                let l:speed = 2
+            endif
+
+            if l:old_cols < 1
+                call s:Clear_highlight()
+                return
+            endif
+
+            call popup_setoptions(s:float, {'maxwidth': l:old_cols - l:speed})
+        endif
     endif
 endfunction
 
@@ -147,8 +164,9 @@ function! s:Highlight_position(force) abort
         let s:float = popup_create(l:text, #{
             \ pos: 'botleft',
             \ line: 'cursor',
-            \ col: 'cursor',
+            \ col: 'cursor+1',
             \ moved: 'WORD',
+            \ wrap: v:false,
             \ highlight: 'Beacon'
         \ })
     endif
