@@ -102,7 +102,7 @@ function! s:Fade_window(...) abort
         endif
     else
         if g:beacon_shrink
-            let l:old_cols = popup_getpos(s:float).width
+            let l:old_cols = get(popup_getpos(s:float), 'width', 1)
 
             if l:old_cols < 20
                 let l:speed = 5
@@ -185,14 +185,18 @@ function! s:Highlight_position(force) abort
         endif
 
         " let s:float = popup_create([ l:text, l:hls ], #{
-        let s:float = popup_create([{'text': l:text, 'props': l:hls}], #{
-            \ pos: 'botleft',
-            \ line: 'cursor',
-            \ col: 'cursor',
-            \ moved: 'WORD',
-            \ wrap: v:false,
-            \ highlight: 'Beacon'
-        \ })
+        try
+            let s:float = popup_create([{'text': l:text, 'props': l:hls}], #{
+                \ pos: 'botleft',
+                \ line: 'cursor',
+                \ col: 'cursor',
+                \ moved: 'any',
+                \ wrap: v:false,
+                \ highlight: 'Beacon'
+            \ })
+        catch
+            
+        endtry
     endif
 
     if g:beacon_fade
