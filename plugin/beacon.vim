@@ -225,29 +225,11 @@ endfunction
 let s:prev_cursor = 0
 " highlight position if cursor moved significally
 function! s:Cursor_moved()
-    let l:cur = line(".")
+    let l:cur = winline()
     let l:diff = abs(l:cur - s:prev_cursor)
 
     if l:diff > g:beacon_minimal_jump
-        let l:prev_fold = foldclosed(s:prev_cursor) 
-        let l:prev_fold_end = foldclosedend(s:prev_cursor) 
-        let l:cur_fold = foldclosed(l:cur) 
-        let l:cur_fold_end = foldclosedend(l:cur) 
-
-        " if we move over fold, substract fold lines from diff
-        if l:prev_fold > -1 && l:prev_fold_end > -1
-            let l:diff -= l:prev_fold_end - l:prev_fold
-        endif
-
-        " if we move over fold, substract fold lines from diff
-        if l:cur_fold > -1 && l:cur_fold_end > -1
-            let l:diff -= l:cur_fold_end - l:cur_fold
-        endif
-
-        " check diff again before highlight
-        if l:diff > g:beacon_minimal_jump
-            call s:Highlight_position(v:false)
-        endif
+        call s:Highlight_position(v:false)
     endif
 
     let s:prev_cursor = l:cur
