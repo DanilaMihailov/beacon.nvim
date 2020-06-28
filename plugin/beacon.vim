@@ -159,15 +159,18 @@ function! s:Highlight_position(force) abort
         call nvim_win_set_option(s:float, 'winblend', 70)
     else
 
+        let l:cur_line = line('.')
+        let l:cur_col = col('.')
+
         " get text under cursor
-        let l:text = substitute(strtrans(strcharpart(getbufline('%', line('.'))[0], col('.') - 1, g:beacon_size)), '\^I', repeat(' ', &tabstop), 'g')
+        let l:text = substitute(strtrans(strcharpart(getbufline('%', l:cur_line)[0], l:cur_col - 1, g:beacon_size)), '\^I', repeat(' ', &tabstop), 'g')
 
         let l:i = 0
         let l:hls = []
 
         " get highlights of each character and save them
         while l:i <= strdisplaywidth(l:text)
-            let l:hi = synIDattr(synID(line("."), l:i, 0), "name")
+            let l:hi = synIDattr(synID(l:cur_line, l:i + l:cur_col, 0), "name")
             if l:hi == ''
                 let l:i += 1
                 continue
