@@ -161,6 +161,7 @@ function! s:Highlight_position(force) abort
 
         let l:cur_line = line('.')
         let l:cur_col = col('.')
+        let l:win_id = win_getid()
 
         " get text under cursor
         let l:text = substitute(strtrans(strcharpart(getbufline('%', l:cur_line)[0], l:cur_col - 1, g:beacon_size)), '\^I', repeat(' ', &tabstop), 'g')
@@ -175,7 +176,7 @@ function! s:Highlight_position(force) abort
                 let l:i += 1
                 continue
             endif
-            let l:prop_name = "BeaconProp".l:i
+            let l:prop_name = "BeaconProp".l:i.l:win_id
             call prop_type_delete(l:prop_name)
             call prop_type_add(l:prop_name, {'highlight': l:hi})
             call add(l:hls, {'col': l:i + 1, 'type': l:prop_name, 'hi': l:hi})
