@@ -3,7 +3,7 @@ Whenever cursor jumps some distance or moves between windows, it will flash so y
 
 **Note**: required versions neovim v0.4+ or vim v8.2+. Working on support for older versions.
 
-<p><a target="_blank" rel="noopener noreferrer" href="/example-beacon.gif"><img src="/example-beacon.gif" alt="example-beacon.gif" style="max-width:100%;"></a></p>
+![example.gif](example-beacon.gif)
 
 *(gif is too slow, it is actually quite fast animation)*
 
@@ -79,6 +79,8 @@ There is 4 commands available.
 - `:BeaconOn` enable Beacon
 - `:BeaconOff` disable Beacon
 
+## Similar plugins
+- Locate cursor after search https://github.com/inside/vim-search-pulse
 
-# How it works
+## How it works
 Whenever plugin detects some kind of a jump, it's showing floating window at the cursor position and using `winblend` fades window out.
