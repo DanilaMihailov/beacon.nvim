@@ -101,7 +101,7 @@ function! s:Fade_window(...) abort
             endif
         endif
     else
-        if g:beacon_shrink
+        if s:float > 0 && g:beacon_shrink
             let l:old_cols = get(popup_getpos(s:float), 'width', 1)
 
             if l:old_cols < 20
@@ -160,7 +160,7 @@ function! s:Highlight_position(force) abort
     else
 
         " get text under cursor
-        let l:text = strcharpart(getbufline("%", line("."))[0], col(".") - 1, g:beacon_size)
+        let l:text = substitute(strtrans(strcharpart(getbufline('%', line('.'))[0], col('.') - 1, g:beacon_size)), '\^I', repeat(' ', &tabstop), 'g')
 
         let l:i = 0
         let l:hls = []
@@ -184,7 +184,6 @@ function! s:Highlight_position(force) abort
             let l:text .= repeat(" ", l:diff)
         endif
 
-        " let s:float = popup_create([ l:text, l:hls ], #{
         try
             let s:float = popup_create([{'text': l:text, 'props': l:hls}], #{
                 \ pos: 'botleft',
