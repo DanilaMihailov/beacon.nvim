@@ -199,7 +199,7 @@ function! s:Highlight_position(force) abort
     endif
 
     if g:beacon_fade
-        let s:fade_timer = timer_start(16, funcref("s:Fade_window"), {'repeat': 35})
+        let s:fade_timer = timer_start(16, funcref("s:Fade_window"), {'repeat': -1})
     endif
 
     let s:close_timer = timer_start(g:beacon_timeout, funcref("s:Clear_highlight"), {'repeat': 1})
