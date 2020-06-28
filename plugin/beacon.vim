@@ -3,6 +3,18 @@ if get(g:, "beacon_loaded", 0)
     finish
 endif
 
+if has("nvim")
+    if !has("nvim-0.4.0")
+        echoerr "Beacon only supports neovim version 0.4+ and vim 8.2+ for now"
+        finish
+    endif
+else
+    if v:version < 802
+        echoerr "Beacon only supports neovim version 0.4+ and vim 8.2+ for now"
+        finish
+    endif
+endif
+
 let g:beacon_loaded = 1
 
 " highlight used for floating window
