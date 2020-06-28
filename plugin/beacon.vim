@@ -3,10 +3,27 @@ if get(g:, "beacon_loaded", 0)
     finish
 endif
 
+if has("nvim")
+    if !has("nvim-0.4.0")
+        echoerr "Beacon only supports neovim version 0.4+ and vim 8.2+ for now"
+        finish
+    endif
+else
+    if v:version < 802
+        echoerr "Beacon only supports neovim version 0.4+ and vim 8.2+ for now"
+        finish
+    endif
+endif
+
 let g:beacon_loaded = 1
 
 " highlight used for floating window
-highlight BeaconDefault guibg=white ctermbg=15
+if has("nvim")
+    highlight BeaconDefault guibg=white ctermbg=15
+else
+    highlight BeaconDefault guibg=silver ctermbg=7
+endif
+
 
 " if user overriden highlight, then we do not touch it
 if !hlexists("Beacon")
@@ -23,7 +40,9 @@ let g:beacon_timeout = get(g:, 'beacon_timeout', 500)
 let g:beacon_ignore_buffers = get(g:, 'beacon_ignore_buffers', [])
 
 " buffer needed for floating window
-let s:fake_buf = nvim_create_buf(v:false, v:true)
+if has("nvim")
+    let s:fake_buf = nvim_create_buf(v:false, v:true)
+endif
 let s:float = 0 " floating win id
 
 let s:fade_timer = 0
@@ -50,42 +69,67 @@ function! s:Clear_highlight(...) abort
         call timer_stop(s:close_timer)
     endif
 
-    if s:float > 0 && nvim_win_is_valid(s:float)
-        call nvim_win_close(s:float, 0)
-        let s:float = 0
+    if has("nvim")
+        if s:float > 0 && nvim_win_is_valid(s:float)
+            call nvim_win_close(s:float, 0)
+            let s:float = 0
+        endif
+    else
+        call popup_close(s:float)
     endif
 endfunction
 
 " smoothly fade out window and then close it
 function! s:Fade_window(...) abort
-    if s:float > 0 && nvim_win_is_valid(s:float)
-        let l:old = nvim_win_get_option(s:float, "winblend")
-        if g:beacon_shrink
-            let l:old_cols = nvim_win_get_width(s:float)
-        else
-            let l:old_cols = 40
-        endif
+    if has("nvim")
+        if s:float > 0 && nvim_win_is_valid(s:float)
+            let l:old = nvim_win_get_option(s:float, "winblend")
+            if g:beacon_shrink
+                let l:old_cols = nvim_win_get_width(s:float)
+            else
+                let l:old_cols = 40
+            endif
 
-        if l:old > 90
-            let l:speed = 3
-        elseif l:old > 80
-            let l:speed = 2
-        else
-            let l:speed = 1
-        endif
+            if l:old > 90
+                let l:speed = 3
+            elseif l:old > 80
+                let l:speed = 2
+            else
+                let l:speed = 1
+            endif
 
-        if l:old == 100 || l:old_cols == 10
-            call s:Clear_highlight()
-            return
+            if l:old == 100 || l:old_cols == 10
+                call s:Clear_highlight()
+                return
+            endif
+            call nvim_win_set_option(s:float, 'winblend', l:old + l:speed)
+            if g:beacon_shrink
+                " some bug with set_width E315 and E5555, when scrolloff set to 8
+                try
+                    call nvim_win_set_width(s:float, l:old_cols - l:speed)
+                catch /.*/
+                    
+                endtry
+            endif
         endif
-        call nvim_win_set_option(s:float, 'winblend', l:old + l:speed)
-        if g:beacon_shrink
-            " some bug with set_width E315 and E5555, when scrolloff set to 8
-            try
-                call nvim_win_set_width(s:float, l:old_cols - l:speed)
-            catch /.*/
-                
-            endtry
+    else
+        if s:float > 0 && g:beacon_shrink
+            let l:old_cols = get(popup_getpos(s:float), 'width', 1)
+
+            if l:old_cols < 20
+                let l:speed = 5
+            elseif l:old_cols < 30
+                let l:speed = 4
+            else
+                let l:speed = 3
+            endif
+
+            if l:old_cols == 1
+                call s:Clear_highlight()
+                return
+            endif
+
+            call popup_setoptions(s:float, {'maxwidth': l:old_cols - l:speed})
         endif
     endif
 endfunction
@@ -101,8 +145,10 @@ function! s:Highlight_position(force) abort
     endif
 
     " get some bugs when enabled in fugitive
-    if nvim_buf_get_option(0, "ft") == "fugitive"
-        return
+    if has("nvim")
+        if nvim_buf_get_option(0, "ft") == "fugitive"
+            return
+        endif
     endif
 
     " already showing, close old window
@@ -110,21 +156,66 @@ function! s:Highlight_position(force) abort
         call s:Clear_highlight()
     endif
 
-    let l:win = nvim_win_get_config(0)
-    " moves happening in floating window, ignore them
-    if has_key(l:win, "relative") && l:win.relative != ""
-        return
+    if has("nvim")
+        let l:win = nvim_win_get_config(0)
+        " moves happening in floating window, ignore them
+        if has_key(l:win, "relative") && l:win.relative != ""
+            return
+        endif
+
+        let l:opts = {'relative': 'win', 'width': g:beacon_size,  'bufpos': [line(".")-1, col(".")], 'height': 1, 'col': 0,
+            \ 'row': 0, 'anchor': 'NW', 'style': 'minimal', 'focusable': v:false}
+        let s:float = nvim_open_win(s:fake_buf, 0, l:opts)
+
+        call nvim_win_set_option(s:float, 'winhl', 'Normal:Beacon')
+        call nvim_win_set_option(s:float, 'winblend', 70)
+    else
+
+        let l:cur_line = line('.')
+        let l:cur_col = col('.')
+        let l:win_id = win_getid()
+
+        " get text under cursor
+        let l:text = substitute(strtrans(strcharpart(getbufline('%', l:cur_line)[0], l:cur_col - 1, g:beacon_size)), '\^I', repeat(' ', &tabstop), 'g')
+
+        let l:i = 0
+        let l:hls = []
+
+        " get highlights of each character and save them
+        while l:i <= strdisplaywidth(l:text)
+            let l:hi = synIDattr(synID(l:cur_line, l:i + l:cur_col, 0), "name")
+            if l:hi == ''
+                let l:i += 1
+                continue
+            endif
+            let l:prop_name = "BeaconProp".l:i.l:win_id
+            call prop_type_delete(l:prop_name)
+            call prop_type_add(l:prop_name, {'highlight': l:hi})
+            call add(l:hls, {'col': l:i + 1, 'type': l:prop_name, 'hi': l:hi})
+            let l:i += 1
+        endwhile
+
+        let l:diff = g:beacon_size - strlen(l:text)
+        if  l:diff > 0
+            let l:text .= repeat(" ", l:diff)
+        endif
+
+        try
+            let s:float = popup_create([{'text': l:text, 'props': l:hls}], #{
+                \ pos: 'botleft',
+                \ line: 'cursor',
+                \ col: 'cursor',
+                \ moved: 'any',
+                \ wrap: v:false,
+                \ highlight: 'Beacon'
+            \ })
+        catch
+            
+        endtry
     endif
 
-    let l:opts = {'relative': 'win', 'width': g:beacon_size,  'bufpos': [line(".")-1, col(".")], 'height': 1, 'col': 0,
-        \ 'row': 0, 'anchor': 'NW', 'style': 'minimal', 'focusable': v:false}
-    let s:float = nvim_open_win(s:fake_buf, 0, l:opts)
-
-    call nvim_win_set_option(s:float, 'winhl', 'Normal:Beacon')
-    call nvim_win_set_option(s:float, 'winblend', 70)
-
     if g:beacon_fade
-        let s:fade_timer = timer_start(16, funcref("s:Fade_window"), {'repeat': 35})
+        let s:fade_timer = timer_start(16, funcref("s:Fade_window"), {'repeat': -1})
     endif
 
     let s:close_timer = timer_start(g:beacon_timeout, funcref("s:Clear_highlight"), {'repeat': 1})
