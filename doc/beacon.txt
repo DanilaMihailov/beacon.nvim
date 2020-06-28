@@ -27,10 +27,8 @@ OPTIONS                                         *beacon-option*
     g:beacon_shrink                             *g:beacon_shrink*
         Shrinking animation of beacon. Default 1.
 
-    g:beacon_fade                               *g:beacon_fade*
+    g:beacon_fade (neovim only)                 *g:beacon_fade*
         Fading animation of beacon. Default 1. 
-        Note: You should set |g:beacon_timeout| to some number of milliseconds
-        (somewhere around 300-500 is nice), otherwise beacon wont be cleared.
 
     g:beacon_timeout                            *g:beacon_timeout*
         Delay before hiding beacon in milliseconds. Default is 500.
