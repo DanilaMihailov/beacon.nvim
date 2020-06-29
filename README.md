@@ -79,6 +79,24 @@ There is 4 commands available.
 - `:BeaconOn` enable Beacon
 - `:BeaconOff` disable Beacon
 
+## Tips
+If you want cursor to be highlighted when you jump to searches with `n`/`N` regardless of distance, use this mappings
+```
+nmap n n:Beacon<cr>
+nmap N N:Beacon<cr>
+nmap * *:Beacon<cr>
+nmap # #:Beacon<cr>
+```
+
+Hide cursor line on inactive windows
+```
+augroup MyCursorLineGroup
+    autocmd!
+    au WinEnter * setlocal cursorline
+    au WinLeave * setlocal nocursorline
+augroup end
+```
+
 ## Similar plugins
 - Locate cursor after search https://github.com/inside/vim-search-pulse
 
