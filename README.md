@@ -3,7 +3,7 @@ Whenever cursor jumps some distance or moves between windows, it will flash so y
 
 **Note**: required versions neovim v0.4+ or vim v8.2+. Working on support for older versions.
 
-![example.gif](example-beacon.gif)
+![example.gif](https://media.giphy.com/media/XBvCTghDpVWnsROLtF/source.gif)
 
 ## Installation
 
