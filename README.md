@@ -5,8 +5,6 @@ Whenever cursor jumps some distance or moves between windows, it will flash so y
 
 ![example.gif](example-beacon.gif)
 
-*(gif is too slow, it is actually quite fast animation)*
-
 ## Installation
 
 ### [vim-plug](https://github.com/junegunn/vim-plug)
