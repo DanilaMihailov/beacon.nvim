@@ -37,6 +37,10 @@ OPTIONS                                         *beacon-option*
         List of regexes that will be tested against buffer name, and if
         matches beacon will not show up. Default [].
 
+    g:beacon_ignore_filetypes                   *g:beacon_ignore_filetypes*
+        List of filetypes that will be tested against &filetype, and if
+        matches beacon will not show up. Default [].
+
 CHANGE COLOR                                    *hl-Beacon*
 
 Beacon is highlighted by `Beacon` group, so you can change it like this:

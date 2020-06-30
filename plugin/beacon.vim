@@ -38,6 +38,7 @@ let g:beacon_show_jumps = get(g:, 'beacon_show_jumps', 1)
 let g:beacon_shrink = get(g:, 'beacon_shrink', 1)
 let g:beacon_timeout = get(g:, 'beacon_timeout', 500)
 let g:beacon_ignore_buffers = get(g:, 'beacon_ignore_buffers', [])
+let g:beacon_ignore_filetypes = get(g:, 'beacon_ignore_filetypes', [])
 
 " buffer needed for floating window
 if has("nvim")
@@ -47,6 +48,17 @@ let s:float = 0 " floating win id
 
 let s:fade_timer = 0
 let s:close_timer = 0
+
+fun! s:IsIgnoreFiletype()
+    let name = &filetype
+
+    for i in g:beacon_ignore_filetypes
+        if name =~ i
+            return 1
+        endif
+    endfor
+    return 0
+endf
 
 fun! s:IsIgnoreBuffer()
     let name = bufname()
@@ -141,6 +153,10 @@ function! s:Highlight_position(force) abort
     endif
 
     if s:IsIgnoreBuffer()
+        return
+    endif
+
+    if s:IsIgnoreFiletype()
         return
     endif
 
