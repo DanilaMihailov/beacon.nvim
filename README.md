@@ -70,6 +70,12 @@ To ignore a buffer you can set list of regexes
 g:beacon_ignore_buffers = [\w*git*\w]
 ```
 
+### Ignoring filetypes
+To ignore filetypes you can set list of filetypes
+```viml
+g:beacon_ignore_filetypes = ['fzf']
+```
+
 ## Commands
 There is 4 commands available.
 - `:Beacon` highlight current position (even if plugin is disabled)
