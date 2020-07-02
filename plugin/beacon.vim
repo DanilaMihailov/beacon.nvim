@@ -52,6 +52,11 @@ let s:close_timer = 0
 fun! s:IsIgnoreFiletype()
     let name = &filetype
 
+    " get some bugs when enabled in fugitive
+    if name == "fugitive"
+        return 1
+    endif
+
     for i in g:beacon_ignore_filetypes
         if name =~ i
             return 1
@@ -62,6 +67,10 @@ endf
 
 fun! s:IsIgnoreBuffer()
     let name = bufname()
+
+    if name == '[Command line]'
+        return 1
+    endif
 
     for i in g:beacon_ignore_buffers
         if name =~ i
@@ -158,13 +167,6 @@ function! s:Highlight_position(force) abort
 
     if s:IsIgnoreFiletype()
         return
-    endif
-
-    " get some bugs when enabled in fugitive
-    if has("nvim")
-        if nvim_buf_get_option(0, "ft") == "fugitive"
-            return
-        endif
     endif
 
     " already showing, close old window
