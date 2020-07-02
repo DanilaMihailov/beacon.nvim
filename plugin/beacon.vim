@@ -54,7 +54,7 @@ fun! s:IsIgnoreFiletype()
 
     " get some bugs when enabled in fugitive
     if name == "fugitive"
-        return
+        return 1
     endif
 
     for i in g:beacon_ignore_filetypes
