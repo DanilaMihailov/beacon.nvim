@@ -63,6 +63,10 @@ endf
 fun! s:IsIgnoreBuffer()
     let name = bufname()
 
+    if name == '[Command line]'
+        return 1
+    endif
+
     for i in g:beacon_ignore_buffers
         if name =~ i
             return 1
