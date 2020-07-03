@@ -88,6 +88,18 @@ endf
 
 " stop timers and remove floatng window
 function! s:Clear_highlight(...) abort
+    if g:beacon_enable == 0 && a:force == v:false
+        return
+    endif
+
+    if s:IsIgnoreBuffer()
+        return
+    endif
+
+    if s:IsIgnoreFiletype()
+        return
+    endif
+
     if s:fade_timer > 0
         call timer_stop(s:fade_timer)
     endif
@@ -108,6 +120,18 @@ endfunction
 
 " smoothly fade out window and then close it
 function! s:Fade_window(...) abort
+    if g:beacon_enable == 0 && a:force == v:false
+        return
+    endif
+
+    if s:IsIgnoreBuffer()
+        return
+    endif
+
+    if s:IsIgnoreFiletype()
+        return
+    endif
+
     if has("nvim")
         if s:float > 0 && nvim_win_is_valid(s:float)
             let l:old = nvim_win_get_option(s:float, "winblend")
@@ -287,4 +311,5 @@ augroup BeaconHighlightMoves
     " autocmd BufWinEnter * call s:Highlight_position()
     " autocmd FocusGained * call s:Highlight_position()
     autocmd WinEnter * call s:Highlight_position(v:false)
+    autocmd CmdwinLeave * call s:Clear_highlight()
 augroup end
