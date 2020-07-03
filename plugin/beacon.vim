@@ -68,6 +68,12 @@ endf
 fun! s:IsIgnoreBuffer()
     let name = bufname()
 
+    " detect if we are inside command line window 
+    " (some weird behaviour in neovim 0.5)
+    if getcmdwintype() != '' || getcmdline() != '' || getcmdtype() != '' || getcmdpos() > 0
+        return 1
+    endif
+
     if name == '[Command line]'
         return 1
     endif
