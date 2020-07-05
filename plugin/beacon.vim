@@ -88,101 +88,80 @@ endf
 
 " stop timers and remove floatng window
 function! s:Clear_highlight(...) abort
-    if g:beacon_enable == 0 && a:force == v:false
-        return
-    endif
-
-    if s:IsIgnoreBuffer()
-        return
-    endif
-
-    if s:IsIgnoreFiletype()
-        return
-    endif
-
-    if s:fade_timer > 0
-        call timer_stop(s:fade_timer)
-    endif
-
-    if s:close_timer > 0
-        call timer_stop(s:close_timer)
-    endif
-
-    if has("nvim")
-        if s:float > 0 && nvim_win_is_valid(s:float)
-            call nvim_win_close(s:float, 0)
-            let s:float = 0
+    try
+        if s:fade_timer > 0
+            call timer_stop(s:fade_timer)
         endif
-    else
-        call popup_close(s:float)
-    endif
+
+        if s:close_timer > 0
+            call timer_stop(s:close_timer)
+        endif
+
+        if has("nvim")
+            if s:float > 0 && nvim_win_is_valid(s:float)
+                call nvim_win_close(s:float, 0)
+                let s:float = 0
+            endif
+        else
+            call popup_close(s:float)
+        endif
+    catch
+        
+    endtry
 endfunction
 
 " smoothly fade out window and then close it
 function! s:Fade_window(...) abort
-    if g:beacon_enable == 0 && a:force == v:false
-        return
-    endif
+    try
+        if has("nvim")
+            if s:float > 0 && nvim_win_is_valid(s:float)
+                let l:old = nvim_win_get_option(s:float, "winblend")
+                if g:beacon_shrink
+                    let l:old_cols = nvim_win_get_width(s:float)
+                else
+                    let l:old_cols = 40
+                endif
 
-    if s:IsIgnoreBuffer()
-        return
-    endif
+                if l:old > 90
+                    let l:speed = 3
+                elseif l:old > 80
+                    let l:speed = 2
+                else
+                    let l:speed = 1
+                endif
 
-    if s:IsIgnoreFiletype()
-        return
-    endif
-
-    if has("nvim")
-        if s:float > 0 && nvim_win_is_valid(s:float)
-            let l:old = nvim_win_get_option(s:float, "winblend")
-            if g:beacon_shrink
-                let l:old_cols = nvim_win_get_width(s:float)
-            else
-                let l:old_cols = 40
-            endif
-
-            if l:old > 90
-                let l:speed = 3
-            elseif l:old > 80
-                let l:speed = 2
-            else
-                let l:speed = 1
-            endif
-
-            if l:old == 100 || l:old_cols == 10
-                call s:Clear_highlight()
-                return
-            endif
-            call nvim_win_set_option(s:float, 'winblend', l:old + l:speed)
-            if g:beacon_shrink
-                " some bug with set_width E315 and E5555, when scrolloff set to 8
-                try
+                if l:old == 100 || l:old_cols == 10
+                    call s:Clear_highlight()
+                    return
+                endif
+                call nvim_win_set_option(s:float, 'winblend', l:old + l:speed)
+                if g:beacon_shrink
                     call nvim_win_set_width(s:float, l:old_cols - l:speed)
-                catch /.*/
-                    
-                endtry
+                endif
+            endif
+        else
+            if s:float > 0 && g:beacon_shrink
+                let l:old_cols = get(popup_getpos(s:float), 'width', 1)
+
+                if l:old_cols < 20
+                    let l:speed = 5
+                elseif l:old_cols < 30
+                    let l:speed = 4
+                else
+                    let l:speed = 3
+                endif
+
+                if l:old_cols == 1
+                    call s:Clear_highlight()
+                    return
+                endif
+
+                call popup_setoptions(s:float, {'maxwidth': l:old_cols - l:speed})
             endif
         endif
-    else
-        if s:float > 0 && g:beacon_shrink
-            let l:old_cols = get(popup_getpos(s:float), 'width', 1)
-
-            if l:old_cols < 20
-                let l:speed = 5
-            elseif l:old_cols < 30
-                let l:speed = 4
-            else
-                let l:speed = 3
-            endif
-
-            if l:old_cols == 1
-                call s:Clear_highlight()
-                return
-            endif
-
-            call popup_setoptions(s:float, {'maxwidth': l:old_cols - l:speed})
-        endif
-    endif
+    catch
+        
+    endtry
 endfunction
 
 " get current cursor position and show floating window there
@@ -306,10 +285,10 @@ command! BeaconOff let g:beacon_enable = 0
 augroup BeaconHighlightMoves
     autocmd!
     if g:beacon_show_jumps
-        autocmd CursorMoved * call s:Cursor_moved()
+        silent autocmd CursorMoved * call s:Cursor_moved()
     endif
     " autocmd BufWinEnter * call s:Highlight_position()
     " autocmd FocusGained * call s:Highlight_position()
-    autocmd WinEnter * call s:Highlight_position(v:false)
-    autocmd CmdwinLeave * call s:Clear_highlight()
+    silent autocmd WinEnter * call s:Highlight_position(v:false)
+    silent autocmd CmdwinLeave * call s:Clear_highlight()
 augroup end
