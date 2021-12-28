@@ -35,6 +35,7 @@ let g:beacon_size = get(g:, 'beacon_size', 40)
 let g:beacon_fade = get(g:, 'beacon_fade', 1)
 let g:beacon_minimal_jump = get(g:, 'beacon_minimal_jump', 10)
 let g:beacon_show_jumps = get(g:, 'beacon_show_jumps', 1)
+let g:beacon_focus_gained = get(g:, 'beacon_focus_gained', 0)
 let g:beacon_shrink = get(g:, 'beacon_shrink', 1)
 let g:beacon_timeout = get(g:, 'beacon_timeout', 500)
 let g:beacon_ignore_buffers = get(g:, 'beacon_ignore_buffers', [])
@@ -288,7 +289,9 @@ augroup BeaconHighlightMoves
         silent autocmd CursorMoved * call s:Cursor_moved()
     endif
     " autocmd BufWinEnter * call s:Highlight_position()
-    " autocmd FocusGained * call s:Highlight_position()
+    if g:beacon_focus_gained
+        silent autocmd FocusGained * call s:Highlight_position(v:false)
+    endif
     silent autocmd WinEnter * call s:Highlight_position(v:false)
     silent autocmd CmdwinLeave * call s:Clear_highlight()
 augroup end
