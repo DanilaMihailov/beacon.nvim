@@ -32,7 +32,12 @@ endif
 
 let g:beacon_enable = get(g:, 'beacon_enable', 1) 
 let g:beacon_size = get(g:, 'beacon_size', 40)
+let g:beacon_minimal_size= get(g:, 'beacon_minimal_size', 6)
 let g:beacon_fade = get(g:, 'beacon_fade', 1)
+let g:beacon_ease = get(g:, 'beacon_ease', "in_quad") "in_quad" | "out_quad" | "in_expo" | "in_quad"
+let g:beacon_fade_interval = get(g:, 'beacon_fade_interval', 10)
+let g:beacon_start_opacity = get(g:, 'beacon_start_opacity', 30)
+let g:beacon_end_opacity = get(g:, 'beacon_end_opacity', 100)
 let g:beacon_minimal_jump = get(g:, 'beacon_minimal_jump', 10)
 let g:beacon_show_jumps = get(g:, 'beacon_show_jumps', 1)
 let g:beacon_focus_gained = get(g:, 'beacon_focus_gained', 0)
@@ -49,6 +54,7 @@ let s:float = 0 " floating win id
 
 let s:fade_timer = 0
 let s:close_timer = 0
+let s:count = 0
 
 fun! s:IsIgnoreFiletype()
     let name = &filetype
@@ -90,6 +96,7 @@ endf
 " stop timers and remove floatng window
 function! s:Clear_highlight(...) abort
     try
+				let s:count = 0
         if s:fade_timer > 0
             call timer_stop(s:fade_timer)
         endif
@@ -111,58 +118,96 @@ function! s:Clear_highlight(...) abort
     endtry
 endfunction
 
+
+function! s:Ease_in_quad(t, b, c, d)
+		let l:t = 1.0 * a:t / a:d
+		return  1.0 * a:c * l:t * l:t + a:b
+endfunction
+
+function! s:Ease_out_quad(t, b, c, d)
+		let l:t = 1.0 * a:t / a:d
+		return -a:c * t * (t - 2) + a:b
+endfunction
+
+function! s:Ease_in_expo(t, b, c, d)
+	if a:t == 0
+		return a:b
+	endif
+	return a:c * pow(2.0, 10.0 * (a:t *1.0/a:d - 1.0)) + a:b - a:c * 0.001
+endfunction
+
+function! s:Ease_out_expo(t, b, c, d)
+	if a:t == a:d
+		return a:b + a:c
+	endif
+	return a:c * (-pow(2.0, -10.0 * a:t * 1.0/a:d) + 1.0) + a:b
+endfunction
+
+function! s:Ease(t,b,c,d)
+
+	if g:beacon_ease == "in_quad" 
+		return s:Ease_in_quad(a:t, a:b, a:c, a:d)
+	endif
+	if g:beacon_ease == "out_quad" 
+		return s:Ease_out_quad(a:t, a:b, a:c, a:d)
+	endif
+	if g:beacon_ease == "in_expo" 
+		return s:Ease_in_expo(a:t, a:b, a:c, a:d)
+	endif
+	if g:beacon_ease == "in_quad" 
+		return s:Ease_out_expo(a:t, a:b, a:c, a:d)
+	endif
+	
+	return a:t
+endfunction
+
 " smoothly fade out window and then close it
 function! s:Fade_window(...) abort
     try
         if has("nvim")
             if s:float > 0 && nvim_win_is_valid(s:float)
-                let l:old = nvim_win_get_option(s:float, "winblend")
+
                 if g:beacon_shrink
                     let l:old_cols = nvim_win_get_width(s:float)
                 else
                     let l:old_cols = 40
                 endif
+								let l:percent = (s:count * 100) / (g:beacon_size - g:beacon_minimal_size)
 
-                if l:old > 90
-                    let l:speed = 3
-                elseif l:old > 80
-                    let l:speed = 2
-                else
-                    let l:speed = 1
-                endif
-
-                if l:old == 100 || l:old_cols == 10
+                if l:percent > 100 || s:count > g:beacon_size - g:beacon_minimal_size
                     call s:Clear_highlight()
                     return
                 endif
-                call nvim_win_set_option(s:float, 'winblend', l:old + l:speed)
+
+								let l:opacity = (g:beacon_end_opacity - g:beacon_start_opacity) * l:percent / 100 + g:beacon_start_opacity
+								
+								if g:beacon_fade
+									call nvim_win_set_option(s:float, 'winblend', float2nr(s:Ease(l:percent, g:beacon_start_opacity, g:beacon_end_opacity, 100)))
+								endif
+								
                 if g:beacon_shrink
-                    call nvim_win_set_width(s:float, l:old_cols - l:speed)
-                endif
+										let l:width = s:Ease(100 - l:percent, g:beacon_minimal_size, g:beacon_size, 100)
+                    call nvim_win_set_width(s:float, float2nr(l:width))
+										" echo "count: " s:count ", width: " l:width ", percent" l:percent
+                end
             endif
         else
             if s:float > 0 && g:beacon_shrink
                 let l:old_cols = get(popup_getpos(s:float), 'width', 1)
 
-                if l:old_cols < 20
-                    let l:speed = 5
-                elseif l:old_cols < 30
-                    let l:speed = 4
-                else
-                    let l:speed = 3
-                endif
-
-                if l:old_cols == 1
+								let l:percent = (s:count * 100) / (g:beacon_size - g:beacon_minimal_size)
+                if l:percent > 100 || s:count > g:beacon_size - g:beacon_minimal_size
                     call s:Clear_highlight()
                     return
                 endif
 
-                call popup_setoptions(s:float, {'maxwidth': l:old_cols - l:speed})
+                call popup_setoptions(s:float, {'maxwidth': float2nr(s:Ease(100 - l:percent, g:beacon_minimal_size, g:beacon_size, 100)) })
             endif
         endif
     catch
         
     endtry
+		let s:count += 1
 endfunction
 
 " get current cursor position and show floating window there
@@ -196,7 +241,7 @@ function! s:Highlight_position(force) abort
         let s:float = nvim_open_win(s:fake_buf, 0, l:opts)
 
         call nvim_win_set_option(s:float, 'winhl', 'Normal:Beacon')
-        call nvim_win_set_option(s:float, 'winblend', 70)
+        call nvim_win_set_option(s:float, 'winblend', g:beacon_start_opacity)
     else
 
         let l:cur_line = line('.')
@@ -242,9 +287,7 @@ function! s:Highlight_position(force) abort
         endtry
     endif
 
-    if g:beacon_fade
-        let s:fade_timer = timer_start(16, funcref("s:Fade_window"), {'repeat': -1})
-    endif
+		let s:fade_timer = timer_start(g:beacon_fade_interval, funcref("s:Fade_window"), {'repeat': -1})
 
     let s:close_timer = timer_start(g:beacon_timeout, funcref("s:Clear_highlight"), {'repeat': 1})
 
