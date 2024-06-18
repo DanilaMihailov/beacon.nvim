@@ -1,67 +1,41 @@
-*beacon.txt*  See your cursor jump
+*beacon.txt*  Never lose your cursor
 
-INTRODUCTION                                    *beacon*
+INTRODUCTION                                                          *beacon*
 
-Whenever cursor jumps some distance or moves between windows, it will flash so
-you can see where it is. This plugin is heavily inspired by emacs package
-beacon.
+Highlight cursor when it moves, changes windows and more!
 
-Note: this plugin only works in neovim.
+This plugin is heavily inspired by emacs package beacon.
 
-OPTIONS                                         *beacon-option*
+CONFIG                                                         *beacon-config*
+>lua
+ {
+  enabled = true, --- (boolean | fun():boolean) check if enabled
+  speed = 2, --- integer speed at wich animation goes
+  width = 40, --- integer width of the beacon window
+  winblend = 70, --- integer starting transparency of beacon window
+  fps = 60, --- integer how smooth the animation going to be
+  min_jump = 10, --- integer what is considered a jump. Number of lines
+}
 
-    g:beacon_enable                             *g:beacon_enable*
-        Enables plugin. Default 1.
-        Note: when set to 0, you still can use |:Beacon| command to highlight
-        cursor. See |beacon-commands|.
-    
-    g:beacon_size                               *g:beacon_size*
-        Change beacon size. Default 40.
 
-    g:beacon_show_jumps                         *g:beacon_show_jumps*
-        Show beacon, when cursor jumps inside window. Default 1.
-
-    g:beacon_minimal_jump                       *g:beacon_minimal_jump*
-        Number of lines that considered a jump. Default 10.
-
-    g:beacon_shrink                             *g:beacon_shrink*
-        Shrinking animation of beacon. Default 1.
-
-    g:beacon_fade (neovim only)                 *g:beacon_fade*
-        Fading animation of beacon. Default 1. 
-
-    g:beacon_timeout                            *g:beacon_timeout*
-        Delay before hiding beacon in milliseconds. Default is 500.
-
-    g:beacon_ignore_buffers                     *g:beacon_ignore_buffers*
-        List of regexes that will be tested against buffer name, and if
-        matches beacon will not show up. Default [].
-
-    g:beacon_ignore_filetypes                   *g:beacon_ignore_filetypes*
-        List of filetypes that will be tested against &filetype, and if
-        matches beacon will not show up. Default [].
-
-CHANGE COLOR                                    *hl-Beacon*
+CHANGE COLOR                                                       *hl-Beacon*
 
 Beacon is highlighted by `Beacon` group, so you can change it like this:
->
-    highlight Beacon guibg=white ctermbg=15
+
+>lua
+  vim.api.nvim_set_hl(0, 'Beacon', { 
+    bg = 'white',
+    ctermbg = 15,
+    default = true
+  })
 <
 use |guibg| if you have |termguicolors| enabled, otherwise use |ctermbg|.
 
-COMMANDS                                        *beacon-commands*
 
-                                                *:Beacon*
-:Beacon         highlight current position (even if plugin is disabled)
+API                                                               *beacon-api*
 
-                                                *:BeaconToggle*
-:BeaconToggle   toggle |g:beacon_enable| variable
-
-                                                *:BeaconOn*
-:BeaconOn       enable Beacon
-
-                                                *:BeaconOff*
-:BeaconOff      disable Beacon
+highlight_cursor()                                 *beacon-highlight-cursor()*
+    Highligts cursor at current position using beacon
 
 ==============================================================================
  vim:tw=78:ft=help:norl:

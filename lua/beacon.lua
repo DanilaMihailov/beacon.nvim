@@ -43,7 +43,7 @@ local function create_window(cfg)
   return window
 end
 
----Highligts cursor at curren position using beacon
+---Highligts cursor at current position using beacon
 function M.highlight_cursor()
   local cfg = M.config
   if cfg.enabled == false or vim.is_callable(cfg.enabled) and not cfg.enabled() then
