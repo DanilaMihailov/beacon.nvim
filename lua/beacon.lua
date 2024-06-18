@@ -1,12 +1,5 @@
 local M = {}
 
--- TODO:
--- on focus gained
--- ignore files (buffers, ftypes)
--- user commands
--- clear highlight on winleave?
--- check highglight override
-
 ---@class beacon.DefaultConfig
 ---@field enabled (boolean | fun():boolean) check if enabled (default: true)
 ---@field speed integer speed at wich animation goes (default: 2)
@@ -81,6 +74,7 @@ function M.highlight_cursor()
     end)
   )
 end
+
 ---@package
 ---Checks if cursor moved enough and if it did calls `highlight_cursor`
 ---@param event beacon.AutocmdEvent
@@ -114,15 +108,16 @@ end
 ---@field data any arbitrary data passed from nvim_exec_autocmds()
 
 ---Setting up plugin
----@param config beacon.DefaultConfig|nil
+---@param config? beacon.DefaultConfig
 function M.setup(config)
   M.config = vim.tbl_extend('force', default_config, config or {})
 
+  -- TODO: check highlight override
   vim.api.nvim_set_hl(0, 'Beacon', { bg = 'white', ctermbg = 15, default = true })
 
   local beacon_group = vim.api.nvim_create_augroup('beacon_group', { clear = true })
 
-  vim.api.nvim_create_autocmd('WinEnter', {
+  vim.api.nvim_create_autocmd({ 'WinEnter', 'FocusGained' }, {
     pattern = '*',
     group = beacon_group,
     desc = 'Highlight cursor',
@@ -142,8 +137,5 @@ function M.setup(config)
     end,
   })
 end
-
--- FIXME: remove this
-M.setup { speed = 2 }
 
 return M
