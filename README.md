@@ -42,7 +42,7 @@ vim.api.nvim_set_hl(0, 'Beacon', { bg = 'white', ctermbg = 15, default = true })
 
 use `guibg` if you have `termguicolors` enabled, otherwise use `ctermbg`.
 
-> NOTE:
+> [!NOTE]
 > checkout doc/beacon.txt for more
 
 ## Similar plugins
