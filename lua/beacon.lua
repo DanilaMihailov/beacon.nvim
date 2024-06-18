@@ -79,6 +79,9 @@ end
 ---Checks if cursor moved enough and if it did calls `highlight_cursor`
 ---@param event beacon.AutocmdEvent
 local function cursor_moved(event)
+  if not vim.api.nvim_buf_is_loaded(event.buf) then
+    return
+  end
   local prev_cursor = vim.b[event.buf].beacon_prev_cursor or 0
   local prev_abs = vim.b[event.buf].beacon_prev_abs or 0
 
