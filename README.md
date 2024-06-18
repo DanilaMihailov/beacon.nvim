@@ -3,7 +3,7 @@
 Highlight cursor when it moves, changes windows and more!
 This plugin is heavily inspired by emacs package [beacon](https://github.com/Malabarba/beacon).
 
-![example.gif](https://user-images.githubusercontent.com/1163040/86011926-be2f6980-ba36-11ea-956b-a377dcc7fafb.gif)
+https://github.com/DanilaMihailov/beacon.nvim/assets/1163040/df4a603e-66c7-4bdb-9704-54a168d59ee7
 
 ## Installation
 
