@@ -16,6 +16,9 @@ local default_config = {
   min_jump = 10,
 }
 
+-- weird behaviour in oil window
+local ignore_fts = { 'oil' }
+
 ---@type beacon.DefaultConfig
 M.config = {}
 
@@ -49,6 +52,21 @@ function M.highlight_cursor()
   if cfg.enabled == false or vim.is_callable(cfg.enabled) and not cfg.enabled() then
     return
   end
+
+  if vim.list_contains(ignore_fts, vim.bo.ft) then
+    return
+  end
+
+  -- ignore preview window
+  if vim.wo.previewwindow then
+    return
+  end
+
+  -- ignore floating windows
+  if vim.api.nvim_win_get_config(vim.api.nvim_get_current_win()).relative ~= '' then
+    return
+  end
+
   local win = create_window(cfg)
   local fade_timer = vim.loop.new_timer()
   local ms = (1 / cfg.fps) * 1000
