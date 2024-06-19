@@ -30,6 +30,8 @@ Or use your favorite plugin manager, you'll need to call setup `require('beacon'
   winblend = 70, --- integer starting transparency of beacon window :h winblend
   fps = 60, --- integer how smooth the animation going to be
   min_jump = 10, --- integer what is considered a jump. Number of lines
+  cursor_events = { 'CursorMoved' }, -- table<string> what events trigger check for cursor moves
+  window_events = { 'WinEnter', 'FocusGained' }, -- table<string> what events trigger cursor highlight
 }
 ```
 

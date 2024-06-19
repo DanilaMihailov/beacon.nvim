@@ -7,6 +7,8 @@ local M = {}
 ---@field winblend integer starting transparency of beacon window :h winblend (default: 70)
 ---@field fps integer how smooth the animation going to be (default: 60)
 ---@field min_jump integer what is considered a jump. Number of lines (default: 10)
+---@field cursor_events table<string> what events trigger check for cursor moves (default: {'CursorMoved'})
+---@field window_events table<string> what events trigger cursor highlight (default: {'WinEnter', 'FocusGained'})
 local default_config = {
   enabled = true,
   speed = 2,
@@ -14,6 +16,8 @@ local default_config = {
   winblend = 70,
   fps = 60,
   min_jump = 10,
+  cursor_events = { 'CursorMoved' },
+  window_events = { 'WinEnter', 'FocusGained' },
 }
 
 -- weird behaviour in oil window
@@ -137,7 +141,7 @@ function M.setup(config)
 
   local beacon_group = vim.api.nvim_create_augroup('beacon_group', { clear = true })
 
-  vim.api.nvim_create_autocmd({ 'WinEnter', 'FocusGained' }, {
+  vim.api.nvim_create_autocmd(M.config.window_events, {
     pattern = '*',
     group = beacon_group,
     desc = 'Highlight cursor',
@@ -145,7 +149,8 @@ function M.setup(config)
       vim.schedule(M.highlight_cursor)
     end,
   })
-  vim.api.nvim_create_autocmd('CursorMoved', {
+
+  vim.api.nvim_create_autocmd(M.config.cursor_events, {
     pattern = '*',
     group = beacon_group,
     desc = 'Highlight cursor moves',
