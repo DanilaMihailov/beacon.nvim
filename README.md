@@ -16,7 +16,7 @@ https://github.com/DanilaMihailov/beacon.nvim/assets/1163040/df4a603e-66c7-4bdb-
 Or use your favorite plugin manager, you'll need to call setup `require('beacon').setup()`
 
 > [!NOTE]
-> For Vim versions checkout previous tags `v1.x.x`
+> For Vim versions checkout v1 tags [v1.3.4](https://github.com/DanilaMihailov/beacon.nvim/tree/v1.3.4)
 
 ## Customization
 
