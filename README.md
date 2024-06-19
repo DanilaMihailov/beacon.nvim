@@ -15,7 +15,8 @@ https://github.com/DanilaMihailov/beacon.nvim/assets/1163040/df4a603e-66c7-4bdb-
 
 Or use your favorite plugin manager, you'll need to call setup `require('beacon').setup()`
 
-For vim versions checkout previous tags `v1.x.x`
+> [!NOTE]
+> For Vim versions checkout previous tags `v1.x.x`
 
 ## Customization
 
@@ -37,10 +38,10 @@ For vim versions checkout previous tags `v1.x.x`
 Beacon is highlighted by `Beacon` group, so you can change it like this:
 
 ```lua
-vim.api.nvim_set_hl(0, 'Beacon', { bg = 'white', ctermbg = 15, default = true })
+vim.api.nvim_set_hl(0, 'Beacon', { bg = 'white' })
 ```
 
-use `guibg` if you have `termguicolors` enabled, otherwise use `ctermbg`.
+check `:help nvim_set_hl()` for more options.
 
 > [!NOTE]
 > checkout doc/beacon.txt for more

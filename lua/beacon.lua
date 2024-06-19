@@ -133,7 +133,6 @@ end
 function M.setup(config)
   M.config = vim.tbl_extend('force', default_config, config or {})
 
-  -- TODO: check highlight override
   vim.api.nvim_set_hl(0, 'Beacon', { bg = 'white', ctermbg = 15, default = true })
 
   local beacon_group = vim.api.nvim_create_augroup('beacon_group', { clear = true })

@@ -21,15 +21,10 @@ CONFIG                                                         *beacon-config*
 CHANGE COLOR                                                       *hl-Beacon*
 
 Beacon is highlighted by `Beacon` group, so you can change it like this:
-
 >lua
-  vim.api.nvim_set_hl(0, 'Beacon', { 
-    bg = 'white',
-    ctermbg = 15,
-    default = true
-  })
+  vim.api.nvim_set_hl(0, 'Beacon', { bg = 'white' })
 <
-use |guibg| if you have |termguicolors| enabled, otherwise use |ctermbg|.
+check |nvim_set_hl()| for more options.
 
 
 API                                                               *beacon-api*
