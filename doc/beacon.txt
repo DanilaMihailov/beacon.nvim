@@ -32,6 +32,32 @@ or simplier way is to change `highlight` params in config
 check |nvim_set_hl()| for more options.
 
 
+TIPS                                                             *beacon-tips*
+
+Disable beacon for specific buffer/window
+>lua
+  require('beacon').setup({
+    enabled = function()
+      if vim.bo.ft:find 'Neogit' then
+        return false
+      end
+      return true
+    end
+  })
+<
+
+Highlight cursor on key press
+>lua
+  vim.keymap.set('n', '<leader><leader>', require('beacon').highlight_cursor)
+<
+
+Disable highlighting jumps inside window
+>lua
+  require('beacon').setup({
+    cursor_events = {} -- set empty
+  })
+<
+
 API                                                               *beacon-api*
 
 highlight_cursor()                                 *beacon-highlight-cursor()*
