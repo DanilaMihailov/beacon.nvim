@@ -9,6 +9,7 @@ local M = {}
 ---@field min_jump integer what is considered a jump. Number of lines (default: 10)
 ---@field cursor_events table<string> what events trigger check for cursor moves (default: {'CursorMoved'})
 ---@field window_events table<string> what events trigger cursor highlight (default: {'WinEnter', 'FocusGained'})
+---@field highlight vim.api.keyset.highlight table passed to vim.api.nvim_set_hl (default: {bg = 'white'})
 local default_config = {
   enabled = true,
   speed = 2,
@@ -18,6 +19,7 @@ local default_config = {
   min_jump = 10,
   cursor_events = { 'CursorMoved' },
   window_events = { 'WinEnter', 'FocusGained' },
+  highlight = { bg = 'white', ctermbg = 15, default = true },
 }
 
 -- weird behaviour in oil window
@@ -137,7 +139,7 @@ end
 function M.setup(config)
   M.config = vim.tbl_extend('force', default_config, config or {})
 
-  vim.api.nvim_set_hl(0, 'Beacon', { bg = 'white', ctermbg = 15, default = true })
+  vim.api.nvim_set_hl(0, 'Beacon', M.config.highlight)
 
   local beacon_group = vim.api.nvim_create_augroup('beacon_group', { clear = true })
 

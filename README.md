@@ -32,6 +32,7 @@ Or use your favorite plugin manager, you'll need to call setup `require('beacon'
   min_jump = 10, --- integer what is considered a jump. Number of lines
   cursor_events = { 'CursorMoved' }, -- table<string> what events trigger check for cursor moves
   window_events = { 'WinEnter', 'FocusGained' }, -- table<string> what events trigger cursor highlight
+  highlight = { bg = 'white', ctermbg = 15 }, -- vim.api.keyset.highlight table passed to vim.api.nvim_set_hl
 }
 ```
 
@@ -42,6 +43,8 @@ Beacon is highlighted by `Beacon` group, so you can change it like this:
 ```lua
 vim.api.nvim_set_hl(0, 'Beacon', { bg = 'white' })
 ```
+
+or simplier way is to change `highlight` params in config
 
 check `:help nvim_set_hl()` for more options.
 
