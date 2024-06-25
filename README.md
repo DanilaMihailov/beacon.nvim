@@ -10,7 +10,7 @@ https://github.com/DanilaMihailov/beacon.nvim/assets/1163040/df4a603e-66c7-4bdb-
 ### [lazy.nvim](https://github.com/folke/lazy.nvim)
 
 ```lua
-{ 'danilamihailov/beacon.nvim', config = true } -- lazy calls setup() by itself
+{ 'danilamihailov/beacon.nvim' } -- lazy calls setup() by itself
 ```
 
 Or use your favorite plugin manager, you'll need to call setup `require('beacon').setup()`
